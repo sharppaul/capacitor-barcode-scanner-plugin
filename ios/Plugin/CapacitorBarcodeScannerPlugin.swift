@@ -26,9 +26,15 @@ public class CapacitorBarcodeScannerPlugin: CAPPlugin {
             return
         }
 
-        guard let argumentsData = try? JSONSerialization.data(withJSONObject: call.jsObjectRepresentation),
-              let scanArguments = try? JSONDecoder().decode(OSBarcodeScanArgumentsModel.self, from: argumentsData) else {
-            call.reject("Error decoding scan arguments")
+        var scanArguments : OSBarcodeScanArgumentsModel
+
+        do {
+            let argumentsData = try JSONSerialization.data(withJSONObject: call.jsObjectRepresentation)
+             scanArguments = try JSONDecoder().decode(OSBarcodeScanArgumentsModel.self, from: argumentsData)
+            // Proceed with scanArguments
+        } catch {
+            print(error)
+            call.reject("Error decoding scan arguments: \(error.localizedDescription)")
             return
         }
 
